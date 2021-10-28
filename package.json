@@ -1,0 +1,23 @@
+{
+  "name": "employeetracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "./db/seed.sql"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dghooley/employeeTracker.git"
+  },
+  "author": "Derick Hooley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dghooley/employeeTracker/issues"
+  },
+  "homepage": "https://github.com/dghooley/employeeTracker#readme",
+  "dependencies": {
+    "inquirer": "^8.2.0"
+  }
+}
