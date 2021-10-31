@@ -16,21 +16,43 @@ function mainMenu(){
             name: "userChoice",
             message: "What would you like to do?",
             choices: [
-                {
-                    name: "View All Employees",
-                    value:"VIEW_EMPLOYEES"
+                "View All Employees",
+                "View All Departments",
+                "View All Roles",
+                "Add Employee",
+                "Add Department",
+                "Add Role",
+                "Update Employee Role",
+                "Exit"
+
+/*                {
+                   name: "View All Employees",
+                   value:"VIEW_EMPLOYEES"
                 },
                 {
                     name: "View All Roles",
-                    value:"VIEW_ROLES"
+                value:"VIEW_ROLES"
                 },
                 {
                     name: "View All Departments",
                     value:"VIEW_DEPARTMENTS"
-                },
+                              
+               },
+*/ 
+
             ]
         }
-    ]).then(response =>{
+        .then(function (answer) {
+            switch (answer.mainMenu) {
+                case "View All Employees":
+                    viewAllEmployees();
+                    break;
+            }
+        })
+
+
+
+/*    ]).then(response =>{
         let userChoice = response.userChoice;
         switch(userChoice){
             case "VIEW_EMPLOYEES":
@@ -38,16 +60,18 @@ function mainMenu(){
             break;
             case "VIEW_ROLES":
                 // fire off view all roles function;
+            viewAllRoles()
             break;
             case "VIEW_DEPARTMENTS":
                 // fore off view all departments function;
+            viewAllDepartments()
             break;
             default:
                 // fire off quit function
         }
     })
 }
-
+*/
 function viewAllEmployees(){
     db.findallEmps()
     .then(([rows])=>{
@@ -56,3 +80,22 @@ function viewAllEmployees(){
     })
     .then(()=> mainMenu());
 }
+
+function viewAllRoles(){
+    db.findallRoles()
+    .then(([rows])=>{
+        let roles = rows;
+        console.table(roles)
+    })
+    .then(()=> mainMenu());
+}
+
+function viewAllDepartments(){
+    db.findallRoles()
+    .then(([rows])=>{
+        let roles = rows;
+        console.table(roles)
+    })
+    .then(()=> mainMenu());
+}
+

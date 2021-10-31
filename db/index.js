@@ -12,10 +12,17 @@ class DB {
         )
     }
 
-
-
-
-
+    findallRoles(){
+        return this.connection.promise().query(
+            "SELECT * FROM roles;"
+        )
+    }
+    findallDepartments(){
+        return this.connection.promise().query(
+            "SELECT * FROM departments;"
+        )
+    }
 }
+
 
 module.exports = new DB(connection);
