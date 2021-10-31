@@ -1,5 +1,7 @@
 const inquirer = require("inquirer");
+const { connection } = require("./db");
 const db = require("./db")
+
 
 
 init()
@@ -25,9 +27,9 @@ function mainMenu(){
                 "Update Employee Role",
                 "Exit"
 
-/*                {
-                   name: "View All Employees",
-                   value:"VIEW_EMPLOYEES"
+/*             {
+                name: "View All Employees",
+                value:"VIEW_EMPLOYEES"
                 },
                 {
                     name: "View All Roles",
@@ -36,22 +38,46 @@ function mainMenu(){
                 {
                     name: "View All Departments",
                     value:"VIEW_DEPARTMENTS"
-                              
-               },
+                },
 */ 
-
-            ]
+                ]
         }
         .then(function (answer) {
             switch (answer.mainMenu) {
                 case "View All Employees":
                     viewAllEmployees();
                     break;
+                
+                case "View All Departments":
+                    viewAllDept();
+                    break;
+                
+                case "View All Roles":
+                    viewAllRoles();
+                    break;
+
+                case "Add Employee":
+                    addEmployee();
+                    break;
+                    
+                case "Add Department":
+                    addDept();
+                    break;
+                    
+                case "Add Role":
+                    addRole();
+                    break;
+                    
+                case "Update Employee Role":
+                    updateEmployeeRole();
+                    break;
+                    
+                case "Exit":
+                    connnection.end();
+                    break;
             }
         })
-
-
-
+            
 /*    ]).then(response =>{
         let userChoice = response.userChoice;
         switch(userChoice){
@@ -70,32 +96,31 @@ function mainMenu(){
                 // fire off quit function
         }
     })
+    */
+    ])
 }
-*/
+
 function viewAllEmployees(){
-    db.findallEmps()
-    .then(([rows])=>{
-        let employees = rows;
-        console.table(employees)
-    })
-    .then(()=> mainMenu());
+    var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id"
+    connection.query(query, function (err, res) {
+        console.table(res);
+        mainMenu();
+    });
+}
+
+function viewAllDept(){
+    var query = "SELECT * FROM department"
+    connection.query(query, function (err, res) {
+        console.table(res);
+        mainMenu();
+    });
 }
 
 function viewAllRoles(){
-    db.findallRoles()
-    .then(([rows])=>{
-        let roles = rows;
-        console.table(roles)
-    })
-    .then(()=> mainMenu());
-}
-
-function viewAllDepartments(){
-    db.findallRoles()
-    .then(([rows])=>{
-        let roles = rows;
-        console.table(roles)
-    })
-    .then(()=> mainMenu());
+    var query = "SELECT * FROM role"
+    connection.query(query, function (err, res) {
+        console.table(res);
+        mainMenu();
+    });
 }
 
