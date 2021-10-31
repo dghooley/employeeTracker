@@ -147,7 +147,7 @@ function mainMenu() {
                 const role_id = res.role_id;
                 const manager_id = res.manager_id;
                 const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
-                    VALUES ("${firstName}", "${lastName}", "${role_id}, "${manager_id}")`;
+                    VALUE ("${firstName}", "${lastName}", "${role_id}, "${manager_id}")`;
                 connection.query(query, function (err, res) {
                     if (err) {
                         throw err;
@@ -202,7 +202,7 @@ function addRole() {
             const title = res.title;
             const salary = res.salary;
             const department_id = res.department_id;
-            const query = `INSERT INTO role (title, salary, department_id) VALUES ("${title}", "${salary}", "${departmentID}")`;
+            const query = `INSERT INTO role (title, salary, department_id) VALUES ("${title}", "${salary}", "${department_id}")`;
             connection.query(query, function (err, res) {
                 if (err) {
                     throw err;
