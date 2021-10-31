@@ -1,5 +1,5 @@
 const inquirer = require("inquirer");
-// const consoleTable = require("console.table");
+const consoleTable = require("console.table");
 
 const { connection } = require("./db");
 const db = require("./db")
@@ -30,68 +30,69 @@ function mainMenu() {
             ],
         }
     ])
-    
-    .then(function (answer) {
-        switch (answer.mainMenu) {
-            case "View All Employees":
-                viewAllEmployees();
-                break;
 
-            case "View All Departments":
-                viewAllDept();
-                break;
-
-            case "View All Roles":
-                viewAllRoles();
-                break;
-
-            case "Add Employee":
-                addEmployee();
-                break;
-
-            case "Add Department":
-                addDept();
-                break;
-
-            case "Add Role":
-                addRole();
-                break;
-
-            case "Update Employee Role":
-                updateEmployeeRole();
-                break;
-
-            case "Exit":
-                connnection.end();
-                break;
-        }
-    })
-/*
-        .then(response => {
-            let userChoice = response.userChoice;
-            switch (userChoice) {
-                case "VIEW_EMPLOYEES":
-                    viewAllEmployees()
+        .then(function (answer) {
+            switch (answer.userChoice) {
+                case "View All Employees":
+                    viewAllEmployees();
                     break;
-                case "VIEW_ROLES":
-                    // fire off view all roles function;
-                    viewAllRoles()
+
+                case "View All Departments":
+                    viewAllDept();
                     break;
-                case "VIEW_DEPARTMENTS":
-                    // fore off view all departments function;
-                    viewAllDepartments()
+
+                case "View All Roles":
+                    viewAllRoles();
                     break;
-                default:
-                // fire off quit function
+
+                case "Add Employee":
+                    addEmployee();
+                    break;
+
+                case "Add Department":
+                    addDept();
+                    break;
+
+                case "Add Role":
+                    addRole();
+                    break;
+
+                case "Update Employee Role":
+                    updateEmployeeRole();
+                    break;
+
                 case "Exit":
                     connection.end();
                     break;
             }
         })
-*/
+    /*
+            .then(response => {
+                let userChoice = response.userChoice;
+                switch (userChoice) {
+                    case "VIEW_EMPLOYEES":
+                        viewAllEmployees()
+                        break;
+                    case "VIEW_ROLES":
+                        // fire off view all roles function;
+                        viewAllRoles()
+                        break;
+                    case "VIEW_DEPARTMENTS":
+                        // fore off view all departments function;
+                        viewAllDepartments()
+                        break;
+                    default:
+                    // fire off quit function
+                    case "Exit":
+                        connection.end();
+                        break;
+                }
+            })
+    */
     function viewAllEmployees() {
-        var query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.department_name AS department, role.salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department on role.department_id = department.id"
+        var query = "SELECT * FROM employee"
         connection.query(query, function (err, res) {
+            if (err) throw err;
             console.table(res);
             mainMenu();
         });
@@ -100,6 +101,7 @@ function mainMenu() {
     function viewAllDept() {
         var query = "SELECT * FROM department"
         connection.query(query, function (err, res) {
+            if (err) throw err;
             console.table(res);
             mainMenu();
         });
@@ -108,6 +110,7 @@ function mainMenu() {
     function viewAllRoles() {
         var query = "SELECT * FROM role"
         connection.query(query, function (err, res) {
+            if (err) throw err;
             console.table(res);
             mainMenu();
         });
@@ -129,22 +132,22 @@ function mainMenu() {
                 {
                     type: "input",
                     message: "Enter the employee's role ID",
-                    name: "addEmployeeRole"
+                    name: "role_id"
                 },
                 {
                     type: "input",
                     message: "Enter the employee's manager ID",
-                    name: "addEmployeeMan"
+                    name: "manager_id"
                 }
             ])
 
             .then(function (res) {
-                const firstName = res.firstName;
-                const lastName = res.lastName;
-                const employeeRoleID = res.addEmployeeRole;
-                const employeeManID = res.addEmployeeMan;
+                const firstName = res.first_name;
+                const lastName = res.last_name;
+                const role_id = res.role_id;
+                const manager_id = res.manager_id;
                 const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
-                    VALUES ("${firstName}", "${lastName}", "${employeeRoleID}, "${employeeManID}")`;
+                    VALUES ("${firstName}", "${lastName}", "${role_id}, "${manager_id}")`;
                 connection.query(query, function (err, res) {
                     if (err) {
                         throw err;
@@ -164,8 +167,8 @@ function addDept() {
             name: "newDept"
         })
         .then(function (res) {
-            const newDepartment = res.newDept;
-            const query = `INSERT INTO department (department_name) VALUES ("${newDepartment}")`;
+            const department = res.department;
+            const query = `INSERT INTO department (name) VALUES ("${department}")`;
             connection.query(query, function (err, res) {
                 if (err) {
                     throw err;
@@ -182,23 +185,23 @@ function addRole() {
             {
                 type: "input",
                 message: "Enter the employee's title",
-                name: "roleTitle"
+                name: "title"
             },
             {
                 type: "input",
                 message: "Enter the employee's salary",
-                name: "roleSalary"
+                name: "salary"
             },
             {
                 type: "input",
                 message: "Enter the employee's department ID",
-                name: "roleDept"
+                name: "department_id"
             }
         ])
         .then(function (res) {
-            const title = res.roleTitle;
-            const salary = res.roleSalary;
-            const departmentID = res.roleDept;
+            const title = res.title;
+            const salary = res.salary;
+            const department_id = res.department_id;
             const query = `INSERT INTO role (title, salary, department_id) VALUES ("${title}", "${salary}", "${departmentID}")`;
             connection.query(query, function (err, res) {
                 if (err) {
@@ -211,29 +214,16 @@ function addRole() {
 }
 
 function updateEmployeeRole() {
-    inquirer
-        .prompt([
-            {
+    const query = "SELECT id, first_name, last_name, role_id  FROM employee";
+    connection.query(query, function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        {
+            inquirer.prompt({
                 type: "input",
-                message: "Enter the employee's ID you want to be updated",
-                name: "updateEmploy"
-            },
-            {
-                type: "input",
-                message: "Enter the new role ID for that employee",
-                name: "newRole"
-            }
-        ])
-        .then(function (res) {
-            const updateEmploy = res.updateEmploy;
-            const newRole = res.newRole;
-            const queryUpdate = `UPDATE employee SET role_id = "${newRole}" WHERE id = "${updateEmploy}"`;
-            connection.query(queryUpdate, function (err, res) {
-                if (err) {
-                    throw err;
-                }
-                console.table(res);
-                mainMenu();
-            })
-        });
+                message: "Which employee needs to be updated? (please use number from id column only)",
+                name: "employee"
+            });
+        }
+    });
 }
