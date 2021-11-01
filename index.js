@@ -218,11 +218,18 @@ function updateEmployeeRole() {
         if (err) throw err;
         console.table(res);
         {
-            inquirer.prompt({
+            inquirer.prompt([
+                {
                 type: "input",
                 message: "Which employee needs to be updated? (please use number from id column only)",
                 name: "employee"
-            });
+                }
+            ])
+/*            
+            .then(function (res) {
+                const 
+            })
+*/        
         }
     });
 }
