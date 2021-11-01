@@ -7,7 +7,7 @@ const db = require("./db")
 init()
 
 function init() {
-    console.log("Welcome to the Employee Manager!")
+    console.log("Welcome to the Employee Tracker!")
     mainMenu()
 }
 
@@ -108,7 +108,7 @@ function mainMenu() {
     }
 
     function viewAllRoles() {
-        var query = "SELECT * FROM role"
+        var query = "SELECT * FROM roles"
         connection.query(query, function (err, res) {
             if (err) throw err;
             console.table(res);
@@ -132,22 +132,21 @@ function mainMenu() {
                 {
                     type: "input",
                     message: "Enter the employee's role ID",
-                    name: "role_id"
+                    name: "roleID"
                 },
                 {
                     type: "input",
                     message: "Enter the employee's manager ID",
-                    name: "manager_id"
+                    name: "managerID"
                 }
             ])
 
             .then(function (res) {
-                const firstName = res.first_name;
-                const lastName = res.last_name;
-                const role_id = res.role_id;
-                const manager_id = res.manager_id;
-                const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
-                    VALUE ("${firstName}", "${lastName}", "${role_id}, "${manager_id}")`;
+                const firstName = res.firstName;
+                const lastName = res.lastName;
+                const roleID = res.roleID;
+                const managerID = res.managerID;
+                const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUE("${firstName}", "${lastName}", "${roleID}", "${managerID}")`;
                 connection.query(query, function (err, res) {
                     if (err) {
                         throw err;
@@ -164,7 +163,7 @@ function addDept() {
         .prompt({
             type: "input",
             message: "Enter the name of the new department",
-            name: "newDept"
+            name: "department"
         })
         .then(function (res) {
             const department = res.department;
@@ -195,14 +194,14 @@ function addRole() {
             {
                 type: "input",
                 message: "Enter the employee's department ID",
-                name: "department_id"
+                name: "departmentID"
             }
         ])
         .then(function (res) {
             const title = res.title;
             const salary = res.salary;
-            const department_id = res.department_id;
-            const query = `INSERT INTO role (title, salary, department_id) VALUES ("${title}", "${salary}", "${department_id}")`;
+            const departmentID = res.departmentID;
+            const query = `INSERT INTO roles (title, salary, department_id) VALUE ("${title}", "${salary}", "${departmentID}")`;
             connection.query(query, function (err, res) {
                 if (err) {
                     throw err;
